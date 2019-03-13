@@ -40,31 +40,31 @@ CREATE VIEW avg_ratio AS
 
 -- insert value into result table, one SQL oart for one ratio range
 INSERT INTO q4(year, countryName, voteRange, partyName)
-SELECT ar.year, ar.cname, '(0, 5]', ar.pname
+SELECT ar.year, ar.cname, '(0-5]', ar.pname
 FROM avg_ratio ar
 WHERE ar.ratio > 0 AND ar.ratio <= 0.05;
 
 INSERT INTO q4(year, countryName, voteRange, partyName)
-SELECT ar.year, ar.cname, '(5, 10]', ar.pname
+SELECT ar.year, ar.cname, '(5-10]', ar.pname
 FROM avg_ratio ar
 WHERE ar.ratio > 0.05 AND ar.ratio <= 0.1;
 
 INSERT INTO q4(year, countryName, voteRange, partyName)
-SELECT ar.year, ar.cname, '(10, 20]', ar.pname
+SELECT ar.year, ar.cname, '(10-20]', ar.pname
 FROM avg_ratio ar
 WHERE ar.ratio > 0.1 AND ar.ratio <= 0.2;
 
 INSERT INTO q4(year, countryName, voteRange, partyName)
-SELECT ar.year, ar.cname, '(20, 30]', ar.pname
+SELECT ar.year, ar.cname, '(20-30]', ar.pname
 FROM avg_ratio ar
 WHERE ar.ratio > 0.2 AND ar.ratio <= 0.3;
 
 INSERT INTO q4(year, countryName, voteRange, partyName)
-SELECT ar.year, ar.cname, '(30, 40]', ar.pname
+SELECT ar.year, ar.cname, '(30-40]', ar.pname
 FROM avg_ratio ar
 WHERE ar.ratio > 0.3 AND ar.ratio <= 0.4;
 
 INSERT INTO q4(year, countryName, voteRange, partyName)
-SELECT ar.year, ar.cname, '(40, 100]', ar.pname
+SELECT ar.year, ar.cname, '(40-100]', ar.pname
 FROM avg_ratio ar
 WHERE ar.ratio > 0.4 AND ar.ratio <= 1;
