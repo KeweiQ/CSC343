@@ -25,7 +25,7 @@ CREATE VIEW avg_each_year AS
 	FROM country_election
 	GROUP BY cid, year;
 
--- find all countries which has come year’s election ratio less than some previous year’s ratio
+-- find all countries which has come year's election ratio less than some previous year's ratio
 CREATE VIEW country_has_decrease AS
 	SELECT DISTINCT a1.cid AS cid
 	FROM avg_each_year a1, avg_each_year a2
