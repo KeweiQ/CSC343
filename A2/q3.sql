@@ -71,20 +71,20 @@ CREATE VIEW more_wins AS
 
 -- get election id and year for all won elections for parties that have won more than 3 times the average number of winning elections of parties of the same country
 CREATE VIEW more_wins_with_elec_info AS
-	SELECT mw.cid, mw.cname, mw.pid, mw.pname, mw.num, wp.eid, EXTRACT(YEAR FROM e.e_date) AS year
+	SELECT DISTINCT mw.cid, mw.cname, mw.pid, mw.pname, mw.num, wp.eid, EXTRACT(YEAR FROM e.e_date) AS year
 	FROM more_wins mw, winner_party wp, election e
 	WHERE mw.pid = wp.pid AND wp.eid = e.id;
 
 -- get most recently won election id and year for parties that have won more than 3 times the average number of winning elections of parties of the same country
 CREATE VIEW most_recent AS
-	SELECT cid, cname, pid, pname, num, eid, year
-	FROM more_wins_with_elec_info
-	WHERE eid NOT IN ( SELECT mwwei1.eid
-			   FROM more_wins_with_elec_info mwwei1, more_wins_with_elec_info mwwei2
-			   WHERE mwwei1.eid = mwwei2.eid AND mwwei1.year < mwwei2.year);
+        SELECT *
+        FROM more_wins_with_elec_info
+        WHERE (cid, pid, year) IN (SELECT cid, pid, MAX(year) AS year
+                    							 FROM more_wins_with_elec_info
+                    							 GROUP BY cid, pid);
 
 -- get family name for each party and insert into table
 INSERT INTO q3(countryName, partyName, partyFamily, wonElections, mostRecentlyWonElectionId, mostRecentlyWonElectionYear)
 SELECT mr.cname, mr.pname, pf.family, mr.num, mr.eid, mr.year
-FROM most_recent mr, party_family pf
-WHERE mr.pid = pf.party_id;
+FROM most_recent mr LEFT JOIN party_family pf
+ON mr.pid = pf.party_id;
