@@ -1,2 +1,2 @@
-# Intro-to-Databases
-Course code: CSC343
+# CSC343 Winter 2019
+Introduction to Databases
