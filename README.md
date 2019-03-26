@@ -1,2 +1,2 @@
-# CSC343 Winter 2019
-Introduction to Databases
+# Introduction to Databases
+CSC343 Winter 2019
