@@ -21,7 +21,7 @@ public class Assignment2 extends JDBCSubmission {
         // Implement this method!
         try {
             connection = DriverManager.getConnection(url, username, password);
-        } catch(SQLException se){
+        } catch (SQLException se) {
             System.err.println("SQL Exception." +
                     "<Message>: " + se.getMessage());
             return false;
@@ -32,7 +32,7 @@ public class Assignment2 extends JDBCSubmission {
     @Override
     public boolean disconnectDB() {
         // Implement this method!
-        if(connection != null) {
+        if (connection != null) {
             try {
                 connection.close();
             } catch (SQLException se) {
@@ -51,10 +51,10 @@ public class Assignment2 extends JDBCSubmission {
         List<Integer> cabinets = new ArrayList<>();
 
         try {
-            String queryString = "select election.id as election_id, cabinet.id as cabinet_id " +
-                "    from election join country on election.country_id = country.id join cabinet on election.id = cabinet.election_id " +
-                "    where country.name = ? " +
-                "    order by election.e_date desc;";
+            String queryString = "SELECT election.id AS election_id, cabinet.id AS cabinet_id " +
+                "    FROM election JOIN country ON election.country_id = country.id JOIN cabinet ON election.id = cabinet.election_id " +
+                "    WHERE country.name = ? " +
+                "    ORDER BY election.e_date desc;";
 
             PreparedStatement ps = connection.prepareStatement(queryString);
             ps.setString(1, countryName);
@@ -99,7 +99,7 @@ public class Assignment2 extends JDBCSubmission {
             while (rs1.next()) {
                 des = rs1.getString(2);
                 com = rs1.getString(3);
-                if(similarity(desCom, des + com) >= threshold || similarity(comDes, com + des) >= threshold) {
+                if (similarity(desCom, des + com) >= threshold || similarity(comDes, com + des) >= threshold) {
                     int id = rs1.getInt("id");
                     ids.add(id);
                 }
