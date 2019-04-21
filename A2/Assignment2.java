@@ -19,25 +19,97 @@ public class Assignment2 extends JDBCSubmission {
     @Override
     public boolean connectDB(String url, String username, String password) {
         // Implement this method!
-        return false;
+        try {
+            connection = DriverManager.getConnection(url, username, password);
+        } catch(SQLException se){
+            System.err.println("SQL Exception." +
+                    "<Message>: " + se.getMessage());
+            return false;
+        }
+        return true;
     }
 
     @Override
     public boolean disconnectDB() {
         // Implement this method!
-        return false;
+        if(connection != null) {
+            try {
+                connection.close();
+            } catch (SQLException se) {
+                System.err.println("SQL Exception." +
+                        "<Message>: " + se.getMessage());
+                return false;
+            }
+        }
+        return true;
     }
 
     @Override
     public ElectionCabinetResult electionSequence(String countryName) {
         // Implement this method!
-        return null;
+        List<Integer> elections = new ArrayList<>();
+        List<Integer> cabinets = new ArrayList<>();
+
+        try {
+            String queryString = "select election.id as election_id, cabinet.id as cabinet_id " +
+                "    from election join country on election.country_id = country.id join cabinet on election.id = cabinet.election_id " +
+                "    where country.name = ? " +
+                "    order by election.e_date desc;";
+
+            PreparedStatement ps = connection.prepareStatement(queryString);
+            ps.setString(1, countryName);
+
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                elections.add(rs.getInt("election_id"));
+                cabinets.add(rs.getInt("cabinet_id"));
+            }
+        } catch (SQLException se) {
+            System.err.println("SQL Exception." +
+                        "<Message>: " + se.getMessage());
+        }
+
+        return new ElectionCabinetResult(elections, cabinets);
     }
 
     @Override
     public List<Integer> findSimilarPoliticians(Integer politicianName, Float threshold) {
         // Implement this method!
-        return null;
+        List<Integer> ids = new ArrayList<>();
+
+        try {
+            String desCom = new String("");
+            String comDes = new String("");
+            String queryString = "SELECT description, comment FROM politician_president WHERE politician_president.id = ?";
+            PreparedStatement ps = connection.prepareStatement(queryString);
+            ps.setInt(1, politicianName);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                desCom = rs.getString(1) + rs.getString(2);
+                comDes = rs.getString(2) + rs.getString(1);
+            }
+
+
+            String des = new String("");
+            String com = new String("");
+            String queryString1 = "SELECT id, description, comment FROM politician_president WHERE id <> ?";
+            PreparedStatement ps1 = connection.prepareStatement(queryString1);
+            ps.setInt(1, politicianName);
+            ResultSet rs1 = ps1.executeQuery();
+            while (rs1.next()) {
+                des = rs1.getString(2);
+                com = rs1.getString(3);
+                if(similarity(desCom, des + com) >= threshold || similarity(comDes, com + des) >= threshold) {
+                    int id = rs1.getInt("id");
+                    ids.add(id);
+                }
+            }
+        } catch (SQLException se) {
+            System.err.println("SQL Exception." +
+                    "<Message>: " + se.getMessage());
+        }
+
+        return ids;
     }
 
     public static void main(String[] args) {
@@ -46,4 +118,3 @@ public class Assignment2 extends JDBCSubmission {
     }
 
 }
-
